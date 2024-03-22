@@ -15,6 +15,11 @@ from openpyxl import load_workbook
 
 
 
+ # Create an empty DataFrame to store the final scraped data
+final_df = pd.DataFrame(columns=['IEC Number', 'IEC Issuance Date', 'IEC Status', 'DEL Status', 'IEC Cancelled Date', 'IEC Suspended Date', 'File Number', 'File Date', 'DGFT RA Office', 'Nature of concern/Firm', 'Category of Exporters', 'Address', 'Branch details', 'RCMC Details', 'PAN', 'Total Number Of Branches'])
+
+
+
 
 # Function to handle captcha processing
 def solve_captcha_icegate1(browser):
@@ -365,13 +370,20 @@ def icegate_first(iec_code):
                         }
                         
                          # Create a new DataFrame to store scraped data
-                        scraped_data_df = pd.DataFrame(columns=['IEC Number' ,'IEC Issuance Date','IEC Status', 'DEL Status', 'IEC Cancelled Date', 'IEC Suspended Date', 'File Number','File Date','DGFT RA Office',
-                                        'Nature of concern/Firm', 'Category of Exporters' , 'Address', 'Branch details', 'RCMC Details' ,'PAN', 'Total Number Of Branches'])
+                        # scraped_data_df = pd.DataFrame(columns=['IEC Number' ,'IEC Issuance Date','IEC Status', 'DEL Status', 'IEC Cancelled Date', 'IEC Suspended Date', 'File Number','File Date','DGFT RA Office',
+                        #                 'Nature of concern/Firm', 'Category of Exporters' , 'Address', 'Branch details', 'RCMC Details' ,'PAN', 'Total Number Of Branches'])
                         
+                        # Create a DataFrame from the row data
+                        # icegate_data_df = pd.DataFrame([new_row])
+                        
+                        # final_df = pd.concat([final_df, icegate_data_df], ignore_index=True)
+
+                        # Return the scraped data DataFrame
+                        # return icegate_data_df
                         scraped_data_df= pd.concat([scraped_data_df, pd.DataFrame([new_row])], ignore_index=True)
                         
                         # Write the scraped data to an Excel file
-                        scraped_data_df.to_excel('scraped_data.xlsx', index=False)
+                        # scraped_data_df.to_excel('scraped_data.xlsx', index=False)
                    
                         
             except NoSuchElementException:
@@ -388,9 +400,6 @@ def icegate_first(iec_code):
 
         # Restore stdout
         sys.stdout = sys.__stdout__
-
-
-
 
 
 
@@ -450,7 +459,14 @@ def process_captcha_dgft(browser):
 
 
 
+
+# Create a new DataFrame to store scraped data
+scraped_data_df = pd.DataFrame(columns=['IEC Number' ,'IEC Issuance Date','IEC Status', 'DEL Status', 'IEC Cancelled Date', 'IEC Suspended Date', 'File Number','File Date','DGFT RA Office',
+                                        'Nature of concern/Firm', 'Category of Exporters' ,'Firm Name', 'Address', 'Branch details', 'RCMC Details' ,'PAN', 'Total Number Of Branches'])
+
+
 def scrape_data_dgft(browser):
+    global scraped_data_df  # Access the global DataFrame
     try:
         
        
@@ -582,6 +598,7 @@ def scrape_data_dgft(browser):
             'DGFT RA Office': details.get('DGFT RA Office',''),
             'Nature of concern/Firm': details.get('Nature of concern/Firm',''),
             'Category of Exporters' : details.get('Category of Exporters',''),
+            'Firm Name' : details.get('Firm Name',''),
             'Address' : details.get('Address',''),
             'Branch details': branch_details_json,
             'RCMC Details' : rcmc_details_json,
@@ -589,17 +606,18 @@ def scrape_data_dgft(browser):
             'Total Number Of Branches': null_data.get('Total Number Of Branches','')
             
         }
-        # Create a new DataFrame to store scraped data
-        scraped_data_df = pd.DataFrame(columns=['IEC Number' ,'IEC Issuance Date','IEC Status', 'DEL Status', 'IEC Cancelled Date', 'IEC Suspended Date', 'File Number','File Date','DGFT RA Office',
-                                        'Nature of concern/Firm', 'Category of Exporters' , 'Address', 'Branch details', 'RCMC Details' ,'PAN', 'Total Number Of Branches'])
         
-        scraped_data_df= pd.concat([scraped_data_df, pd.DataFrame([new_row])], ignore_index=True)
-        print("scraped_data_df ", scraped_data_df)
+    
+        scraped_data_df = pd.concat([scraped_data_df, pd.DataFrame([new_row])], ignore_index=True)
         
-        # Write the scraped data to an Excel file
-        scraped_data_df.to_excel('scraped_data.xlsx', index=False)
+        # return True
+        # scraped_data_df.to_excel('scraped_data.xlsx', index=False)
+        # return scraped_data_df 
+        # print("scraped_data_df ", scraped_data_df)
         
-        return rcmc_details_json, details, branch_details_json
+        
+        
+        # return rcmc_details_json, details, branch_details_json
         # # Define the path to save the Excel file
         # excel_file = "scraped_data.xlsx"
 
@@ -677,8 +695,17 @@ def no_progress(blocknum, bs, size):
     pass
 
 
+
+
 # Replace 'path/to/your/file.xlsx' with the actual path to your Excel file
 df = pd.read_excel('IEC_details.xlsx', dtype={'IEC_CODE': str})
+
+
+
+
+
+
+
 
 
 
@@ -722,17 +749,49 @@ def dgft(iec_code, firm_name):
                 unavailable_message = browser.find_element(By.XPATH, '/html/body/div[16]/div/div/div/div[1]').text
                 if "Details for this IEC Number is not available." in unavailable_message:
                     icegate_first(iec_code)  # Call the icegate function if the message exists
+                    # pass
                     
             
                 else:
-                     
+                     # Proceed with scraping the data if the message doesn't exist
+                     # Define the column names to be set as NULL
+                     null_columns = ["PAN", "Total Number Of Branches"]
+                        
+                     # Create a dictionary with NULL values for the specified columns
+                     null_data = {column: ["NULL"] for column in null_columns}
+                    
+                    
                       # Proceed with scraping the data if the message doesn't exist
-                      scrape_data_dgft(browser)
-                     
+                     scraped_data = scrape_data_dgft(browser)
+                     print("scraped_dat====", scraped_data)
+                     if scraped_data is not None:
+                        rcmc_details_json, details, branch_details_json = scraped_data
+                        # Create a new row in the DataFrame with the scraped data
+                        new_row = {
+                            'IEC Number' : details.get('IEC Number', ''),
+                            'IEC Issuance Date': details.get('IEC Issuance Date',''),
+                            'IEC Status' : details.get('IEC Status',''),
+                            'DEL Status': details.get('DEL Status',''),
+                            'IEC Cancelled Date' : details.get('IEC Cancelled Date',''),
+                            'IEC Suspended Date': details.get('IEC Suspended Date',''),
+                            'File Number': details.get('File Number',''),
+                            'File Date': details.get('File Date',''),
+                            'DGFT RA Office': details.get('DGFT RA Office',''),
+                            'Nature of concern/Firm': details.get('Nature of concern/Firm',''),
+                            'Category of Exporters' : details.get('Category of Exporters',''),
+                            'Firm Name' : details.get('Firm Name',''),
+                            'Address' : details.get('Address',''),
+                            'Branch details': branch_details_json,
+                            'RCMC Details' : rcmc_details_json,
+                            'PAN' : null_data.get('PAN',''),
+                            'Total Number Of Branches': null_data.get('Total Number Of Branches','')
+                            
+                        }
+                        
+                        scraped_data_df= pd.concat([scraped_data_df, pd.DataFrame([new_row])], ignore_index=True)
             except NoSuchElementException:
                 # If the element is not found, proceed with scraping the data
-                # scrape_data_dgft(browser)
-                pass
+                scrape_data_dgft(browser)
 
     except Exception as e:
         traceback.print_exc()
@@ -752,9 +811,17 @@ def read_excel():
             
             # Call your function or code with the IEC code and firm name
             dgft(iec_code, firm_name)
+        
+        # Write the scraped data to an Excel file after processing all rows
+        scraped_data_df.to_excel('scraped_data.xlsx', index=False)
+        
     except Exception as e:
         traceback.print_exc()
-        print("Excel reading  error", e)     
+        print("Excel reading  error", e)
+        
+    #  # Write the scraped data to an Excel file   
+    # scraped_data_df.to_excel('scraped_data.xlsx', index=False)
      
     
 read_excel()
+
