@@ -58,10 +58,10 @@ print("Excel file  has been created.")
 
 
 
+#########################################################################
 
 
-
-# import pandas as pd
+import pandas as pd
 
 data = {
     "message": "This is an example JSON file.",
@@ -103,6 +103,9 @@ df.to_excel("xlss.xlsx", index=False)
 print("Excel file  has been created.")
 
 
+#########################################################################
+
+import pandas as pd
 
 div_details    = [{'IEC Number': '0301014175', 'IEC Issuance Date': '19/06/2001', 'IEC Status': 'Cancelled', 'DEL Status': 'N', 'IEC Cancelled Date': '', 'IEC Suspended Date': '', 'File Number': '030413182678AM17', 'File Date': '10/08/2016', 'DGFT RA Office': 'RA MUMBAI', 'Nature of concern/Firm': 'Private Limited', 'Category of Exporters': 'Service Provider', 'Firm Name': 'ACCENTURE SERVICES PVT. LTD.', 'Address': 'PLANT 3 GODREJ & BOYCE COMPLEX ,\xa0\n\t\t\t\t\tLBS MARG VIKHROLI WEST Contact No: 919820934702 ,\xa0\n\t\t\t\t\tMUMBAI , \xa0MUMBAI ,\xa0\n\t\t\t\t\tMAHARASHTRA,\xa0\t400079'}]
 details    = {'IEC Number': '0301014175', 'IEC Issuance Date': '19/06/2001', 'IEC Status': 'Cancelled', 'DEL Status': 'N', 'IEC Cancelled Date': '', 'IEC Suspended Date': '', 'File Number': '030413182678AM17', 'File Date': '10/08/2016', 'DGFT RA Office': 'RA MUMBAI', 'Nature of concern/Firm': 'Private Limited', 'Category of Exporters': 'Service Provider', 'Firm Name': 'ACCENTURE SERVICES PVT. LTD.', 'Address': 'PLANT 3 GODREJ & BOYCE COMPLEX ,\xa0\n\t\t\t\t\tLBS MARG VIKHROLI WEST Contact No: 919820934702 ,\xa0\n\t\t\t\t\tMUMBAI , \xa0MUMBAI ,\xa0\n\t\t\t\t\tMAHARASHTRA,\xa0\t400079'}

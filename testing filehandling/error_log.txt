@@ -1,0 +1,4 @@
+Location: File:dualcavity-->Method:dualCavityPO_load-->Line No: <Line number>, Error: invalid literal for int() with base 10: 'python -u "c:\\Users\\Premkumar.8265\\Desktop\\documents-for-api-and-dashboard\\testing filehandling\\file1.py"'
+Location: File:dualcavity-->Method:dualCavityPO_load-->Line No:36, Error: invalid literal for int() with base 10: 'er'
+Location: File:dualcavity-->Method:dualCavityPO_load-->Line No:36, Error: invalid literal for int() with base 10: 'gg'
+Location: File:dualcavity-->Method:dualCavityPO_load-->Line No:36, Error: invalid literal for int() with base 10: 'cls'

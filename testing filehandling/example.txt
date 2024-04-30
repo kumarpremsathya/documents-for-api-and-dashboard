@@ -1,3 +1,0 @@
-This is an example file.
-It contains some text.
-We'll use it to demonstrate file handling in Python.
